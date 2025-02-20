@@ -1,0 +1,105 @@
+@baseUrl = http://localhost:5003
+
+###inicio
+GET {{baseUrl}}/
+
+##-------------------------------------------------------------
+### FUNCIONARIO
+
+### Criar um Funcionário (Sem Foto):
+POST {{baseUrl}}/funcionarios
+Content-Type: multipart/form-data; boundary=---------------------------boundary123
+
+-----------------------------boundary123
+Content-Disposition: form-data; name="nome"
+
+João Silva
+-----------------------------boundary123--
+
+
+
+###
+### Criar um Funcionário com Foto
+POST {{baseUrl}}/funcionarios
+Content-Type: multipart/form-data; boundary=---------------------------boundary123
+
+-----------------------------boundary123
+Content-Disposition: form-data; name="nome"
+
+João Silva
+-----------------------------boundary123
+Content-Disposition: form-data; name="foto"; filename="foto.jpg"
+Content-Type: image/jpeg
+
+< ./foto.jpg
+-----------------------------boundary123--
+
+### Buscar todos os Funcionários:
+GET {{baseUrl}}/funcionarios
+
+###Buscar um Funcionário por ID:
+GET {{baseUrl}}/funcionarios/2
+
+###Atualizar um Funcionário somente nome:
+PUT {{baseUrl}}/funcionarios/2
+Content-Type: multipart/form-data; boundary=---------------------------boundary123
+
+-----------------------------boundary123
+Content-Disposition: form-data; name="nome"
+
+Carlos Silva Atualizado
+-----------------------------boundary123--
+
+###atualizar um funcionario com foto:
+PUT http://localhost:5003/funcionarios/2
+Content-Type: multipart/form-data; boundary=---------------------------boundary123
+
+-----------------------------boundary123
+Content-Disposition: form-data; name="nome"
+
+Carlos Silva Atualizado
+-----------------------------boundary123
+Content-Disposition: form-data; name="foto"; filename="nova_foto.jpg"
+Content-Type: image/jpeg
+
+< ./nova_foto.jpg
+-----------------------------boundary123--
+
+
+###Deletar um Funcionário:
+curl -X DELETE http://localhost:5003/funcionarios/2
+
+##-------------------------------------------------------------
+### PROJETO
+### Criar um Projeto:
+POST {{baseUrl}}/projetos
+
+### Buscar todos os Projetos:
+GET {{baseUrl}}/projetos
+
+### Buscar um Projeto por ID:
+GET {{baseUrl}}/projetos/{id:int}
+
+###Atualizar um Projeto:
+PUT {{baseUrl}}/projetos/{id:int}
+
+###Deletar um Projeto:
+DELETE {{baseUrl}}/projetos/{id:int}
+
+##-------------------------------------------------------------
+### ESCALA ROBO
+### GET para obter escalas de todos os funcionários:
+GET {{baseUrl}}/escalas
+
+###POST para adicionar dias à escala de um funcionário:
+POST {{baseUrl}}/escalas/adicionar/{funcionarioId:int}
+
+###DELETE para remover dias da escala de um funcionário:
+DELETE {{baseUrl}}/escalas/remover/{funcionarioId:int}
+
+
+
+
+
+
+

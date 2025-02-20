@@ -1,5 +1,3 @@
-# Projeto_Conquistas_Deveres
-
 minhas expecificações do sistema são essas:
 funcionario:
 	-nome: string
