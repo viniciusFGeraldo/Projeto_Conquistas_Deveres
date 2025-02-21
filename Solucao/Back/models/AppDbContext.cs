@@ -1,13 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
 namespace Back.models
 {
     public class AppDbContext : DbContext
     {
-        // ✅ Construtor correto para permitir injeção de dependência
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<EscalaRobo> Escalas { get; set; }
@@ -37,15 +38,27 @@ namespace Back.models
                 .HasForeignKey(e => e.FuncionarioId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Configuração da conversão para a lista de datas
+            // Definição de conversão para lista de datas
+            var dateTimeConverter = new ValueConverter<List<DateTime>, string>( 
+                v => string.Join(",", v.Select(d => d.ToString("yyyy-MM-dd"))),  // Converte lista de DateTime para string
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)          // Converte de volta para lista de DateTime
+                    .Select(date => DateTime.Parse(date))
+                    .ToList()
+            );
+
+            // Definindo o ValueComparer para comparação de listas de datas
+            var dateTimeListComparer = new ValueComparer<List<DateTime>>(
+                (l1, l2) => l1.SequenceEqual(l2),  // Comparação das listas
+                l => l.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())), // Gerando o hash para comparação de listas
+                l => l.ToList()  // Cria uma cópia da lista
+            );
+
+            // Aplicando tanto o conversor quanto o comparador à propriedade 'Datas'
             modelBuilder.Entity<EscalaRobo>()
                 .Property(e => e.Datas)
-                .HasConversion(
-                    v => string.Join(",", v.Select(d => d.ToString("yyyy-MM-dd"))),   // Converte a lista de datas para string
-                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)          // Converte de volta para a lista de DateTime
-                        .Select(date => DateTime.Parse(date))
-                        .ToList()
-                );
+                .HasConversion(dateTimeConverter)
+                .HasComment("Lista de datas associadas à escala do funcionário.")
+                .Metadata.SetValueComparer(dateTimeListComparer);
 
             base.OnModelCreating(modelBuilder);
         }

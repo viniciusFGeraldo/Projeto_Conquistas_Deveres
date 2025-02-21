@@ -2,6 +2,7 @@
 using Back.models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Back.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250221151638_AlterarEscalaRoboDatas")]
+    partial class AlterarEscalaRoboDatas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
@@ -24,8 +27,7 @@ namespace Back.Migrations
 
                     b.Property<string>("Datas")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasComment("Lista de datas associadas à escala do funcionário.");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("FuncionarioId")
                         .HasColumnType("INTEGER");

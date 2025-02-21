@@ -73,18 +73,41 @@ curl -X DELETE http://localhost:5003/funcionarios/2
 ### PROJETO
 ### Criar um Projeto:
 POST {{baseUrl}}/projetos
+Content-Type: application/json
+
+{
+  "nome": "Projeto Teste",
+  "responsavelId": 1,
+  "subResponsavelId": 3,
+  "nota": 9.5
+}
+
+
 
 ### Buscar todos os Projetos:
 GET {{baseUrl}}/projetos
 
 ### Buscar um Projeto por ID:
-GET {{baseUrl}}/projetos/{id:int}
+GET {{baseUrl}}/projetos/1
 
 ###Atualizar um Projeto:
-PUT {{baseUrl}}/projetos/{id:int}
+PUT {{baseUrl}}/projetos/1
+Content-Type: application/json
+
+{
+  "nome": "Projeto Atualizado",
+  "responsavelId": 3,
+  "subResponsavelId": 1,
+  "resultado": "Projeto concluído com sucesso.",
+  "entrega1": "2025-02-10",
+  "entrega2": "2025-02-15",
+  "entrega3": "2025-02-20",
+  "nota": 8.7
+}
 
 ###Deletar um Projeto:
-DELETE {{baseUrl}}/projetos/{id:int}
+DELETE {{baseUrl}}/projetos/1
+
 
 ##-------------------------------------------------------------
 ### ESCALA ROBO
@@ -92,10 +115,30 @@ DELETE {{baseUrl}}/projetos/{id:int}
 GET {{baseUrl}}/escalas
 
 ###POST para adicionar dias à escala de um funcionário:
-POST {{baseUrl}}/escalas/adicionar/{funcionarioId:int}
+POST {{baseUrl}}/escalas/adicionar/1
+Content-Type: application/json
+
+{
+  "Datas": [
+    "2025-01-22",
+    "2025-01-23",
+    "2025-01-24"
+  ]
+}
+
+
 
 ###DELETE para remover dias da escala de um funcionário:
-DELETE {{baseUrl}}/escalas/remover/{funcionarioId:int}
+DELETE {{baseUrl}}/escalas/remover/1
+Content-Type: application/json
+
+{
+  "Datas": [
+    "2025-02-22",
+    "2025-02-23"
+  ]
+}
+
 
 
 
