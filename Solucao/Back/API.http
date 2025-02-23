@@ -13,7 +13,7 @@ Content-Type: multipart/form-data; boundary=---------------------------boundary1
 -----------------------------boundary123
 Content-Disposition: form-data; name="nome"
 
-João Silva
+tais
 -----------------------------boundary123--
 
 
@@ -26,7 +26,7 @@ Content-Type: multipart/form-data; boundary=---------------------------boundary1
 -----------------------------boundary123
 Content-Disposition: form-data; name="nome"
 
-João Silva
+maria mario
 -----------------------------boundary123
 Content-Disposition: form-data; name="foto"; filename="foto.jpg"
 Content-Type: image/jpeg
@@ -47,7 +47,7 @@ Content-Type: multipart/form-data; boundary=---------------------------boundary1
 -----------------------------boundary123
 Content-Disposition: form-data; name="nome"
 
-Carlos Silva Atualizado
+maria Atualizado
 -----------------------------boundary123--
 
 ###atualizar um funcionario com foto:
@@ -67,7 +67,7 @@ Content-Type: image/jpeg
 
 
 ###Deletar um Funcionário:
-curl -X DELETE http://localhost:5003/funcionarios/2
+curl -X DELETE http://localhost:5003/funcionarios/3
 
 ##-------------------------------------------------------------
 ### PROJETO
@@ -78,7 +78,7 @@ Content-Type: application/json
 {
   "nome": "Projeto Teste",
   "responsavelId": 1,
-  "subResponsavelId": 3,
+  "subResponsavelId": 2,
   "nota": 9.5
 }
 
@@ -96,7 +96,7 @@ Content-Type: application/json
 
 {
   "nome": "Projeto Atualizado",
-  "responsavelId": 3,
+  "responsavelId": 2,
   "subResponsavelId": 1,
   "resultado": "Projeto concluído com sucesso.",
   "entrega1": "2025-02-10",
@@ -112,37 +112,20 @@ DELETE {{baseUrl}}/projetos/1
 ##-------------------------------------------------------------
 ### ESCALA ROBO
 ### GET para obter escalas de todos os funcionários:
-GET {{baseUrl}}/escalas
+GET {{baseUrl}}/escalas/funcionarios
+
 
 ###POST para adicionar dias à escala de um funcionário:
-POST {{baseUrl}}/escalas/adicionar/1
+POST {{baseUrl}}/escalas/atualizar/1
 Content-Type: application/json
 
 {
-  "Datas": [
+  "datas": [
     "2025-01-22",
     "2025-01-23",
     "2025-01-24"
   ]
 }
-
-
-
-###DELETE para remover dias da escala de um funcionário:
-DELETE {{baseUrl}}/escalas/remover/1
-Content-Type: application/json
-
-{
-  "Datas": [
-    "2025-02-22",
-    "2025-02-23"
-  ]
-}
-
-
-
-
-
 
 
 

@@ -16,6 +16,10 @@ namespace Back.models
 
         public List<Projeto> ProjetosComoResponsavel { get; set; } = new();
         public List<Projeto> ProjetosComoSubResponsavel { get; set; } = new();
-        public List<EscalaRobo> Escalas { get; set; } = new();
+        // Relacionamento com EscalaRobo
+        public ICollection<EscalaRobo> EscalasRobo { get; set; }  // Nome da propriedade (pode ser 'EscalasRobo')
+
+        // Relacionamento: um funcionário pode ter várias escalas mensais
+        public List<EscalaMes> EscalasMes { get; set; } = new();
     }
 }
