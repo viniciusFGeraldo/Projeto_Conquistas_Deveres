@@ -13,39 +13,75 @@ namespace Back.Endpoints
         public static void MapFuncionarioEndpoints(this WebApplication app)
         {
             var group = app.MapGroup("/funcionarios");
-            
-            //Criar funcionarios
-            group.MapPost("/", async ([FromServices] AppDbContext db, [FromForm] string nome, [FromForm] IFormFile? foto) =>
+
+// Criar funcionários
+group.MapPost("/", async ([FromServices] AppDbContext db, [FromForm] string nome, [FromForm] IFormFile? foto) =>
+{
+    try
+    {
+        if (string.IsNullOrWhiteSpace(nome))
+        {
+            return Results.BadRequest("O nome do funcionário é obrigatório.");
+        }
+
+        string? caminhoFoto = null;
+
+        if (foto != null)
+        {
+            // Validar tipo de arquivo (somente imagens)
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+            var fileExtension = Path.GetExtension(foto.FileName).ToLower();
+
+            Console.WriteLine($"Arquivo recebido: {foto.FileName}, Extensão: {fileExtension}");
+
+            if (!allowedExtensions.Contains(fileExtension))
             {
-                string? caminhoFoto = null;
+                return Results.BadRequest("Arquivo inválido. Por favor, envie uma imagem.");
+            }
 
-                if (foto != null)
-                {
-                    var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Fotos");
-                    Directory.CreateDirectory(uploadsDir);
+            var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Fotos");
+            if (!Directory.Exists(uploadsDir))
+            {
+                Directory.CreateDirectory(uploadsDir);
+                Console.WriteLine($"Diretório criado: {uploadsDir}");
+            }
 
-                    string fileName = $"{DateTime.Now:yyyyMMdd_HHmmss}_{Guid.NewGuid()}{Path.GetExtension(foto.FileName)}";
-                    string filePath = Path.Combine(uploadsDir, fileName);
+            // Nome do arquivo com timestamp e GUID para garantir unicidade
+            string fileName = $"{DateTime.Now:yyyyMMdd_HHmmss}_{Guid.NewGuid()}{fileExtension}";
+            string filePath = Path.Combine(uploadsDir, fileName);
 
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await foto.CopyToAsync(stream);
-                    }
+            // Salvar o arquivo no diretório
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await foto.CopyToAsync(stream);
+            }
 
-                    caminhoFoto = Path.Combine("Uploads", "Fotos", fileName).Replace("\\", "/");
-                }
+            // Caminho relativo para o arquivo
+            caminhoFoto = Path.Combine("Uploads", "Fotos", fileName).Replace("\\", "/");
+            Console.WriteLine($"Foto salva em: {caminhoFoto}");
+        }
 
-                var funcionario = new Funcionario
-                {
-                    Nome = nome,
-                    FotoCaminho = caminhoFoto
-                };
+        var funcionario = new Funcionario
+        {
+            Nome = nome,
+            FotoCaminho = caminhoFoto
+        };
 
-                db.Funcionarios.Add(funcionario);
-                await db.SaveChangesAsync();
+        db.Funcionarios.Add(funcionario);
+        await db.SaveChangesAsync();
 
-                return Results.Created($"/funcionarios/{funcionario.Id}", funcionario);
-            }).DisableAntiforgery();
+        Console.WriteLine($"Funcionário criado: {funcionario.Nome}, ID: {funcionario.Id}");
+
+        return Results.Created($"/funcionarios/{funcionario.Id}", funcionario);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erro ao criar funcionário: {ex.Message}");
+        return Results.Problem("Erro interno ao processar a requisição.");
+    }
+}).DisableAntiforgery();
+
+
 
 
 
